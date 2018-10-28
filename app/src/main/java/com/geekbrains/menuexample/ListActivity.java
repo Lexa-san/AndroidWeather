@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -11,15 +12,16 @@ import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ListActivity extends AppCompatActivity {
 
-    List<String> elements;
-    ArrayAdapter<String> adapter;
-    ListView listView;
+    private List<String> elements;
+    private ArrayAdapter<String> adapter;
+//    ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,16 +35,14 @@ public class ListActivity extends AppCompatActivity {
         }
 
         // Связываемся с ListView
-        listView = (ListView) findViewById(R.id.list);
-
+        ListView listView = findViewById(R.id.list);
         // создаем адаптер
         adapter = new ArrayAdapter<String>
                 (this, android.R.layout.simple_list_item_1, elements);
-
         // устанавливаем адаптер списку
         listView.setAdapter(adapter);
 
-        // регестрируем контекстное меню на список.
+        // регистрируем контекстное меню на список
         registerForContextMenu(listView);
     }
 
@@ -81,24 +81,33 @@ public class ListActivity extends AppCompatActivity {
         }
     }
 
-    // Метод, который вызывается не всего один раз как было с option menu, а каждый раз перед тем,
-    // как context-ное меню будет показано.
+    /**
+     * Создание контекстного меню (context menu). Вызывается каждый раз перед показом context menu.
+     * @param menu
+     * @param v
+     * @param menuInfo
+     */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.context_menu, menu);
+        getMenuInflater().inflate(R.menu.context_menu, menu);
     }
 
-    // Метод вызывается по нажатию на любой пункт меню. В качестве агрумента приходит item меню.
+    /**
+     * Обработка нажатия на пункт контектсного меню (context menu).
+     * @param item
+     * @return
+     */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.menu_edit:
+                Toast.makeText(this, "Menu Edit", Toast.LENGTH_SHORT).show();
                 editElement(info.position);
                 return true;
             case R.id.menu_delete:
+                Toast.makeText(this, "Menu Delete", Toast.LENGTH_SHORT).show();
                 deleteElement(info.position);
                 return true;
             default:
