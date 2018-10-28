@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -43,8 +44,69 @@ public class ListActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
 
         // регистрируем контекстное меню на список
-        registerForContextMenu(listView);
+//        registerForContextMenu(listView);
+
+        /**
+         * register CAB
+         */
+        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+            private ArrayList<Integer> selectedPositions = new ArrayList<Integer>(0);
+
+            // do something when items are selected/de-selected
+            @Override
+            public void onItemCheckedStateChanged(android.view.ActionMode mode, int position, long id, boolean checked) {
+                selectedPositions.add(position);
+            }
+
+            // Inflate the menu for the CAB
+            @Override
+            public boolean onCreateActionMode(android.view.ActionMode mode, Menu menu) {
+                mode.setTitle("My CAB menu");
+                MenuInflater inflater = mode.getMenuInflater();
+                inflater.inflate(R.menu.context_menu, menu);
+                return true;
+            }
+
+            // Here you can perform updates to the CAB due to
+            // an invalidate() request
+            @Override
+            public boolean onPrepareActionMode(android.view.ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            // Respond to clicks on the actions in the CAB
+            @Override
+            public boolean onActionItemClicked(android.view.ActionMode mode, MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.menu_delete:
+                        Toast.makeText(getBaseContext(), "'Delete' was clicked", Toast.LENGTH_SHORT).show();
+                        deleteSelectedItems(selectedPositions);
+                        selectedPositions.clear();
+                        mode.finish(); // Action picked, so close the CAB
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+
+            // Here you can make any necessary updates to the activity when
+            // the CAB is removed. By default, selected items are deselected/unchecked.
+            @Override
+            public void onDestroyActionMode(android.view.ActionMode mode) {
+
+            }
+        });
+
     }
+
+    private void deleteSelectedItems(ArrayList<Integer> selectedPositions) {
+        int size = selectedPositions.size();
+        for (int i = 0; i < size; i++) {
+            deleteElement(selectedPositions.get(i));
+        }
+    }
+
 
     /**
      * Переопределение метода создания меню.
