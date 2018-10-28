@@ -46,24 +46,35 @@ public class ListActivity extends AppCompatActivity {
         registerForContextMenu(listView);
     }
 
-    // Переопределение метода создания меню. Этот callback вызывается всегда, но он пустой, здесь мы
-    //переопределением говорим системе создать наше меню.
-     @Override
+    /**
+     * Переопределение метода создания меню.
+     *
+     * @param menu
+     * @return
+     */
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
 
-    // Метод вызывается по нажатию на любой пункт меню. В качестве агрумента приходит item меню.
+    /**
+     * Метод вызывается по нажатию на любой пункт меню.
+     *
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // обработка нажатий
         switch (item.getItemId()) {
             case R.id.menu_add:
                 addElement();
                 return true;
             case R.id.menu_clear:
                 clearList();
+                return true;
+            case R.id.menu_exit:
+                exitApp();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -95,26 +106,45 @@ public class ListActivity extends AppCompatActivity {
         }
     }
 
-    // Метод очищает лист полностью.
+    /**
+     * Метод очищает лист полностью.
+     */
     private void clearList() {
         elements.clear();
         adapter.notifyDataSetChanged();
     }
-    // Метод добавляет элемент в список.
+
+    /**
+     * Метод добавляет элемент в список.
+     */
     private void addElement() {
         elements.add("New element");
         adapter.notifyDataSetChanged();
     }
 
-    // Метод переписывает текст пункта меню на другой.
+    /**
+     * Метод переписывает текст пункта меню на другой.
+     * @param id
+     */
     private void editElement(int id) {
         elements.set(id, "Edited");
         adapter.notifyDataSetChanged();
     }
 
-    // Метод удаляет пункт из меню.
+    /**
+     * Метод удаляет пункт из меню.
+     * @param id
+     */
     private void deleteElement(int id) {
         elements.remove(id);
         adapter.notifyDataSetChanged();
     }
+
+    /**
+     * Exit from app.
+     */
+    private void exitApp() {
+        finish();
+    }
+
 }
