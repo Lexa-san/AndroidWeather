@@ -1,7 +1,10 @@
-## GeekBrains Android part 2
+## AndroidMenuExample
 
 ### Course
+GeekBrains Android 2
+
 2018-10-24
 
-### App title
-AndroidWeather
+### Project
+
+Examples of different menus.
